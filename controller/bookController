@@ -1,0 +1,67 @@
+const db = require("../models");
+const bookModel = db.books
+
+async function getAllBooks(req, res) {
+    try {
+        const books = await bookModel.findAll()
+        res.status(200).json(books)
+    } catch (err) {
+        res.send(err)
+    }
+}
+
+async function addBooks(req, res) {
+    const bookInfo = req.body
+
+    try {
+        const book = await bookModel.create(bookInfo)
+        res.status(201).json({
+            message: "Book added successfully",
+            data: book
+        })
+    } catch (err) {
+        res.status(500).send(err)
+    }
+}
+
+async function updateBooks(req, res) {
+    const bookId = req.params.id
+    const bookInfoupdate = req.body
+    try {
+        const book = await bookModel.update(bookInfoupdate, {
+            where: {
+                id: bookId
+            }
+        })
+        res.status(201).json({
+            message: "Book updated successfully",
+            data: bookInfoupdate
+        })
+    } catch (err) {
+        res.status(500).send(err)
+    }
+}
+
+async function deleteBooks(req, res) {
+    const bookId = req.params.id
+    try {
+        const book = await bookModel.destroy({
+            where: {
+                id: bookId
+            }
+        })
+        res.status(201).json({
+            message: "Book deleted successfully",
+            data: bookId
+        })
+    } catch (err) {
+        res.status(500).send(err)
+    }
+}
+
+module.exports = {
+    getAllBooks,
+    addBooks,
+    updateBooks,
+    deleteBooks
+}
